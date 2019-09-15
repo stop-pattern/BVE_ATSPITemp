@@ -115,9 +115,11 @@
   <ItemGroup>
     <ClInclude Include="ats.h" />
     <ClInclude Include="dllmain.h" />
+    <ClInclude Include="Header.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dllmain.def" />

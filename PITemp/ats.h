@@ -1,6 +1,10 @@
-//Headder for ATS Plugin
+//Header for ATS Plugin
 //Author Tetsu Otter
-#include <windows.h>
+//Modded by Stop_Pattern
+
+#pragma once
+#ifndef _ATS_
+#define _ATS_
 
 //DLL importを短縮
 #define DE extern "C" __declspec(dllexport)
@@ -14,8 +18,13 @@ struct Spec		//列車のスペックに関する情報
 	int B = 0;	//ブレーキ段数
 	int P = 0;	//ノッチ段数
 	int A = 0;	//ATS確認段数
-	int J = 0;	//常用最大段数
+	int J = 0;	//常用段数67
 	int C = 0;	//編成車両数
+};
+struct SpecPlus : Spec
+{
+	int E = 0;	//非常段数
+	void setData(Spec);	//設定値代入
 };
 struct State		//列車状態に関する情報
 {
@@ -29,6 +38,14 @@ struct State		//列車状態に関する情報
 	float SAP = 0;	//SAP圧力[kPa]
 	float I = 0;	//電流[A]
 };
+struct StatePlus : State
+{
+	long double dV = 0;	//フレーム間速度差[km/h]
+	long double dT = 0;	//フレーム間経過時間[ms]
+	double Zd = 0;	//列車位置(誤差含)[m]
+	double A = 0;	//加減速度[km/h/s]
+	void setData(StatePlus, State);	//設定値代入
+};
 struct Hand		//ハンドル位置に関する情報
 {
 	int B = 0;	//ブレーキハンドル位置
@@ -40,11 +57,10 @@ struct Beacon		//Beaconに関する情報
 {
 	int Num = 0;	//Beaconの番号
 	int Sig = 0;	//対応する閉塞の現示番号
-	float Z = 0;	//対応する閉塞までの距離[m]
+	float X = 0;	//対応する閉塞までの距離[m]
 	int Data = 0;	//Beaconの第三引数の値
 };
 
-Hand handle;
 enum Reverser	//レバーサー位置
 {
 	Back = -1,	//後進
@@ -78,7 +94,7 @@ enum InitialPosition	//ハンドルの初期位置設定
 };
 enum ATSKeys	//キー押下情報
 {
-	S,A1,A2,B1,B2,C1,C2,D,E,F,G,H,I,J,K,L
+	S, A1, A2, B1, B2, C1, C2, D, E, F, G, H, I, J, K, L
 };
 
 DE void SC Load(void);
@@ -97,3 +113,5 @@ DE void SC DoorOpen(void);
 DE void SC DoorClose(void);
 DE void SC SetSignal(int);
 DE void SC SetBeaconData(Beacon);
+
+#endif // _ATS_

@@ -5,8 +5,8 @@
  *プロジェクト名変更時は、dllmain.defの "LIBRARY" に設定された "PITemp" という文字列を新たなプロジェクト名に変更してください。
 */
 
-#include "ats.h"
-#include <string.h>
+
+#include "Header.h"
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -18,6 +18,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
+		getPath(hModule);
         break;
     }
     return TRUE;
@@ -30,14 +31,14 @@ DE void SC Dispose() {
 DE int SC GetPluginVersion() {
 	return PI_VERSION;
 }
-DE void SC SetVehicleSpec(Spec s)
-{
+DE void SC SetVehicleSpec(Spec s) {
+	specific.setData(s);
 }
 DE void SC Initialize(int b) {
 	b = InitialPosition::Service;
 }
-DE Hand SC Elapse(State S, int * p, int * s)
-{
+DE Hand SC Elapse(State S, int * p, int * s) {
+	Stat.setData(Stat, S);
 	handle.C = ConstSPInfo::Continue;
 	//s[255] = SoundInfo::Continue;
 	return handle;
