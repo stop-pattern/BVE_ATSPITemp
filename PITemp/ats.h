@@ -2,81 +2,81 @@
 //Author Tetsu Otter
 #include <windows.h>
 
-//DLL import‚ğ’Zk
+//DLL importã‚’çŸ­ç¸®
 #define DE extern "C" __declspec(dllexport)
-//‰½‚Ì‚½‚ß‚©–Y‚ê‚½‚¯‚Ç“ü‚ê‚Æ‚­
+//ä½•ã®ãŸã‚ã‹å¿˜ã‚ŒãŸã‘ã©å…¥ã‚Œã¨ã
 #define SC __stdcall
-//ƒvƒ‰ƒOƒCƒ“‚Ìƒo[ƒWƒ‡ƒ“
+//ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³
 #define PI_VERSION 0x00020000
 
-struct Spec		//—ñÔ‚ÌƒXƒyƒbƒN‚ÉŠÖ‚·‚éî•ñ
+struct Spec		//åˆ—è»Šã®ã‚¹ãƒšãƒƒã‚¯ã«é–¢ã™ã‚‹æƒ…å ±
 {
-	int B = 0;	//ƒuƒŒ[ƒL’i”
-	int P = 0;	//ƒmƒbƒ`’i”
-	int A = 0;	//ATSŠm”F’i”
-	int J = 0;	//í—pÅ‘å’i”
-	int C = 0;	//•Ò¬Ô—¼”
+	int B = 0;	//ãƒ–ãƒ¬ãƒ¼ã‚­æ®µæ•°
+	int P = 0;	//ãƒãƒƒãƒæ®µæ•°
+	int A = 0;	//ATSç¢ºèªæ®µæ•°
+	int J = 0;	//å¸¸ç”¨æœ€å¤§æ®µæ•°
+	int C = 0;	//ç·¨æˆè»Šä¸¡æ•°
 };
-struct State		//—ñÔó‘Ô‚ÉŠÖ‚·‚éî•ñ
+struct State		//åˆ—è»ŠçŠ¶æ…‹ã«é–¢ã™ã‚‹æƒ…å ±
 {
-	double Z = 0;	//—ñÔˆÊ’u[m]
-	float V = 0;	//—ñÔ‘¬“x[km/h]
-	int T = 0;		//0‚©‚ç‚ÌŒo‰ßŠÔ[ms]
-	float BC = 0;	//BCˆ³—Í[kPa]
-	float MR = 0;	//MRˆ³—Í[kPa]
-	float ER = 0;	//ERˆ³—Í[kPa]
-	float BP = 0;	//BPˆ³—Í[kPa]
-	float SAP = 0;	//SAPˆ³—Í[kPa]
-	float I = 0;	//“d—¬[A]
+	double Z = 0;	//åˆ—è»Šä½ç½®[m]
+	float V = 0;	//åˆ—è»Šé€Ÿåº¦[km/h]
+	int T = 0;		//0æ™‚ã‹ã‚‰ã®çµŒéæ™‚é–“[ms]
+	float BC = 0;	//BCåœ§åŠ›[kPa]
+	float MR = 0;	//MRåœ§åŠ›[kPa]
+	float ER = 0;	//ERåœ§åŠ›[kPa]
+	float BP = 0;	//BPåœ§åŠ›[kPa]
+	float SAP = 0;	//SAPåœ§åŠ›[kPa]
+	float I = 0;	//é›»æµ[A]
 };
-struct Hand		//ƒnƒ“ƒhƒ‹ˆÊ’u‚ÉŠÖ‚·‚éî•ñ
+struct Hand		//ãƒãƒ³ãƒ‰ãƒ«ä½ç½®ã«é–¢ã™ã‚‹æƒ…å ±
 {
-	int B = 0;	//ƒuƒŒ[ƒLƒnƒ“ƒhƒ‹ˆÊ’u
-	int P = 0;	//ƒmƒbƒ`ƒnƒ“ƒhƒ‹ˆÊ’u
-	int R = 0;	//ƒŒƒo[ƒT[ƒnƒ“ƒhƒ‹ˆÊ’u
-	int C = 0;	//’è‘¬§Œäó‘Ô
+	int B = 0;	//ãƒ–ãƒ¬ãƒ¼ã‚­ãƒãƒ³ãƒ‰ãƒ«ä½ç½®
+	int P = 0;	//ãƒãƒƒãƒãƒãƒ³ãƒ‰ãƒ«ä½ç½®
+	int R = 0;	//ãƒ¬ãƒãƒ¼ã‚µãƒ¼ãƒãƒ³ãƒ‰ãƒ«ä½ç½®
+	int C = 0;	//å®šé€Ÿåˆ¶å¾¡çŠ¶æ…‹
 };
-struct Beacon		//Beacon‚ÉŠÖ‚·‚éî•ñ
+struct Beacon		//Beaconã«é–¢ã™ã‚‹æƒ…å ±
 {
-	int Num = 0;	//Beacon‚Ì”Ô†
-	int Sig = 0;	//‘Î‰‚·‚é•ÂÇ‚ÌŒ»¦”Ô†
-	float Z = 0;	//‘Î‰‚·‚é•ÂÇ‚Ü‚Å‚Ì‹——£[m]
-	int Data = 0;	//Beacon‚Ì‘æOˆø”‚Ì’l
+	int Num = 0;	//Beaconã®ç•ªå·
+	int Sig = 0;	//å¯¾å¿œã™ã‚‹é–‰å¡ã®ç¾ç¤ºç•ªå·
+	float Z = 0;	//å¯¾å¿œã™ã‚‹é–‰å¡ã¾ã§ã®è·é›¢[m]
+	int Data = 0;	//Beaconã®ç¬¬ä¸‰å¼•æ•°ã®å€¤
 };
 
 Hand handle;
-enum Reverser	//ƒŒƒo[ƒT[ˆÊ’u
+enum Reverser	//ãƒ¬ãƒãƒ¼ã‚µãƒ¼ä½ç½®
 {
-	Back = -1,	//Œãi
-	Neutral,	//’†—§
-	Forward		//‘Oi
+	Back = -1,	//å¾Œé€²
+	Neutral,	//ä¸­ç«‹
+	Forward		//å‰é€²
 };
-enum ConstSPInfo//’è‘¬§Œä‚Ìó‘Ô
+enum ConstSPInfo//å®šé€Ÿåˆ¶å¾¡ã®çŠ¶æ…‹
 {
-	Continue,	//‘O‰ñ‚Ìó‘Ô‚ğŒp‘±‚·‚é
-	Enable,		//—LŒø‰»‚·‚é
-	Disable		//–³Œø‰»‚·‚é
+	Continue,	//å‰å›ã®çŠ¶æ…‹ã‚’ç¶™ç¶šã™ã‚‹
+	Enable,		//æœ‰åŠ¹åŒ–ã™ã‚‹
+	Disable		//ç„¡åŠ¹åŒ–ã™ã‚‹
 };
-enum HornInfo	//Œx“J‚Ì”Ô†
+enum HornInfo	//è­¦ç¬›ã®ç•ªå·
 {
 	Horn1,		//Primary Horn
 	Horn2,		//Secondary Horn
 	MusicHorn	//Horn Music
 };
-enum SoundInfo	//ƒTƒEƒ“ƒh‚Ì‘€ìî•ñ
+enum SoundInfo	//ã‚µã‚¦ãƒ³ãƒ‰ã®æ“ä½œæƒ…å ±
 {
-	PlayLoop,	//ŒJ‚è•Ô‚µÄ¶‚·‚é
-	PlayOnce,	//1“x‚¾‚¯Ä¶‚·‚é
-	PlayContinue,	//‘O‰ñ‚Ìó‘Ô‚ğŒp‘±‚·‚é
-	Stop = -1000//Ä¶‚ğ’â~‚·‚é
+	PlayLoop,	//ç¹°ã‚Šè¿”ã—å†ç”Ÿã™ã‚‹
+	PlayOnce,	//1åº¦ã ã‘å†ç”Ÿã™ã‚‹
+	PlayContinue,	//å‰å›ã®çŠ¶æ…‹ã‚’ç¶™ç¶šã™ã‚‹
+	Stop = -1000//å†ç”Ÿã‚’åœæ­¢ã™ã‚‹
 };
-enum InitialPosition	//ƒnƒ“ƒhƒ‹‚Ì‰ŠúˆÊ’uİ’è
+enum InitialPosition	//ãƒãƒ³ãƒ‰ãƒ«ã®åˆæœŸä½ç½®è¨­å®š
 {
-	Service,			//í—pƒuƒŒ[ƒL(B67?)
-	Emergency,			//”ñíƒuƒŒ[ƒL(EB)
-	Removed				//”²‚«æ‚èˆÊ’u
+	Service,			//å¸¸ç”¨ãƒ–ãƒ¬ãƒ¼ã‚­(B67?)
+	Emergency,			//éå¸¸ãƒ–ãƒ¬ãƒ¼ã‚­(EB)
+	Removed				//æŠœãå–ã‚Šä½ç½®
 };
-enum ATSKeys	//ƒL[‰Ÿ‰ºî•ñ
+enum ATSKeys	//ã‚­ãƒ¼æŠ¼ä¸‹æƒ…å ±
 {
 	S,A1,A2,B1,B2,C1,C2,D,E,F,G,H,I,J,K,L
 };
