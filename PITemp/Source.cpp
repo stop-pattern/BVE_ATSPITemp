@@ -18,18 +18,27 @@ void getPath(HMODULE hModule) {	//path取得
 	using std::string;
 
 	//dll本体のpathを取得
-	char path[MAX_PATH + 1];
-	GetModuleFileName((HMODULE)hModule, path, sizeof(path));
-	char* pt = path;
-	string dllPath(pt);
-	string iniPath = dllPath;
+	char path[MAX_PATH + 1];	//path
+	if (0 != GetModuleFileName((HMODULE)hModule, path, sizeof(path) / sizeof(path[0]))) {	//path取得
+		//path分解
+		char path_drive[MAX_PATH + 1],	//ドライブ名
+			path_dir[MAX_PATH + 1],	//ディレクトリ名
+			path_fname[MAX_PATH + 1],	//ファイル名
+			path_ext[MAX_PATH + 1];	//拡張子
+		_splitpath(path, path_drive, path_dir, path_fname, path_ext);	//パス名を構成要素に分解
+		string drive(path_drive),	//ドライブ名
+			dir(path_dir),	//ディレクトリ名
+			fname(path_fname),	//ファイル名
+			ext(path_ext);	//拡張子
 
-	//拡張子置換
-	const string beforeExt = ".dll";
-	const string afterExt = ".ini";
-	string::size_type pos(iniPath.find_last_of(beforeExt));
-	if (pos != string::npos) {
-		iniPath.replace(pos, beforeExt.size(), afterExt);
+
+		//pathを格納
+		dllPath = drive + dir + fname + ext;
+		iniPath = drive + dir + fname + ".ini";
+	}
+	else {
+		dllPath = "";
+		iniPath = "";
 	}
 }
 
